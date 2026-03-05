@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "ONYX",
+    "slug": "onyx-vod",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.onyx.vod"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#000000"
+      },
+      "package": "com.onyx.vod"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "scheme": "onyx-vod",
+    "extra": {
+      "eas": {
+        "projectId": "8a2c9acd-b08b-4fcf-b179-c91edb6c1742"
+      }
+    }
+  }
+}
