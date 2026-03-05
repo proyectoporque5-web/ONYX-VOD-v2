@@ -1,0 +1,5 @@
+{
+  "name": "ONYX VOD",
+  "description": "A Netflix-style VOD application featuring movies and TV shows via TMDB API.",
+  "requestFramePermissions": []
+}

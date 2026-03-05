@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@theme {
+  --color-onyx-red: #E50914;
+  --color-onyx-black: #000000;
+  --color-onyx-dark-gray: #141414;
+  --color-onyx-light-gray: #e5e5e5;
+}
+
+body {
+  background-color: var(--color-onyx-black);
+  color: white;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Hide scrollbar for horizontal lists but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
