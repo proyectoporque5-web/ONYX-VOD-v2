@@ -1,13 +1,12 @@
-name: Construir ONYX (Instalación Forzada V11)
+name: Construir ONYX APK (Final)
 
 on:
-  workflow_dispatch:
   push:
     branches: [ main, master ]
+  workflow_dispatch:
 
 jobs:
   build:
-    name: Compilación Release
     runs-on: ubuntu-latest
 
     steps:
@@ -25,32 +24,10 @@ jobs:
         with:
           node-version: '18'
 
-      - name: 4. 🚨 INSTALACIÓN DE EMERGENCIA (Forzar Expo)
+      - name: 4. Instalación Blindada
         run: |
-          # Borramos cualquier basura previa
-          rm -rf node_modules package-lock.json android
-          
-          # FORZAMOS la instalación de Expo SDK 50 y React Native
-          # Esto arregla el error "expo module not found"
-          npm install expo@^50.0.0 \
-                      react-native@0.73.6 \
-                      react@18.2.0 \
-                      expo-router \
-                      expo-av \
-                      expo-status-bar \
-                      expo-constants \
-                      expo-linking \
-                      react-native-safe-area-context \
-                      react-native-screens \
-                      react-native-webview \
-                      react-native-youtube-iframe \
-                      axios \
-                      nativewind \
-                      tailwindcss \
-                      @react-native-async-storage/async-storage \
-                      --save
-
-          # Instalamos las herramientas de línea de comandos
+          npm cache clean --force
+          npm install --legacy-peer-deps
           npm install -g expo-cli eas-cli
 
       - name: 5. Generar Assets (Iconos)
@@ -61,10 +38,10 @@ jobs:
           curl -L "https://dummyimage.com/1242x2436/000000/ff0000.png&text=LOADING" > assets/splash.png
           curl -L "https://dummyimage.com/48x48/000000/ff0000.png" > assets/favicon.png
 
-      - name: 6. Prebuild Android (Generar carpetas nativas)
+      - name: 6. Prebuild Android
         run: npx expo prebuild --platform android --clean
 
-      - name: 7. Inyectar Llave de Seguridad (Evita Pantalla Roja)
+      - name: 7. Generar Llave de Firma
         working-directory: android/app
         run: |
           keytool -genkey -v -keystore release.keystore -alias onyx-key -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Onyx" -storepass onyx1234 -keypass onyx1234
@@ -73,13 +50,13 @@ jobs:
           echo "keyAlias=onyx-key" >> keystore.properties
           echo "keyPassword=onyx1234" >> keystore.properties
 
-      - name: 8. Compilar APK (MODO PRODUCCION)
+      - name: 8. Compilar APK Release
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease -x lint --stacktrace
+          ./gradlew assembleRelease -x lint
 
-      - name: 9. Subir APK Final
+      - name: 9. Subir APK
         uses: actions/upload-artifact@v4
         with:
           name: ONYX-APK-FINAL
