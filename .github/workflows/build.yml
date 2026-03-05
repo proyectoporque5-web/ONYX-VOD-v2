@@ -1,4 +1,4 @@
-name: Construir ONYX PRODUCCION V10
+name: Construir ONYX (Instalación Forzada V11)
 
 on:
   workflow_dispatch:
@@ -7,11 +7,11 @@ on:
 
 jobs:
   build:
-    name: Compilacion Release
+    name: Compilación Release
     runs-on: ubuntu-latest
 
     steps:
-      - name: 1. Descargar Codigo
+      - name: 1. Descargar Código
         uses: actions/checkout@v4
 
       - name: 2. Configurar Java 17
@@ -25,13 +25,35 @@ jobs:
         with:
           node-version: '18'
 
-      - name: 4. Limpieza e Instalacion Segura
+      - name: 4. 🚨 INSTALACIÓN DE EMERGENCIA (Forzar Expo)
         run: |
-          npm cache clean --force
-          npm install --legacy-peer-deps
+          # Borramos cualquier basura previa
+          rm -rf node_modules package-lock.json android
+          
+          # FORZAMOS la instalación de Expo SDK 50 y React Native
+          # Esto arregla el error "expo module not found"
+          npm install expo@^50.0.0 \
+                      react-native@0.73.6 \
+                      react@18.2.0 \
+                      expo-router \
+                      expo-av \
+                      expo-status-bar \
+                      expo-constants \
+                      expo-linking \
+                      react-native-safe-area-context \
+                      react-native-screens \
+                      react-native-webview \
+                      react-native-youtube-iframe \
+                      axios \
+                      nativewind \
+                      tailwindcss \
+                      @react-native-async-storage/async-storage \
+                      --save
+
+          # Instalamos las herramientas de línea de comandos
           npm install -g expo-cli eas-cli
 
-      - name: 5. Generar Assets (Evitar errores de Iconos)
+      - name: 5. Generar Assets (Iconos)
         run: |
           mkdir -p assets
           curl -L "https://dummyimage.com/1024x1024/000000/ff0000.png&text=ONYX" > assets/icon.png
@@ -39,7 +61,7 @@ jobs:
           curl -L "https://dummyimage.com/1242x2436/000000/ff0000.png&text=LOADING" > assets/splash.png
           curl -L "https://dummyimage.com/48x48/000000/ff0000.png" > assets/favicon.png
 
-      - name: 6. Prebuild Android
+      - name: 6. Prebuild Android (Generar carpetas nativas)
         run: npx expo prebuild --platform android --clean
 
       - name: 7. Inyectar Llave de Seguridad (Evita Pantalla Roja)
@@ -57,7 +79,7 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleRelease -x lint --stacktrace
 
-      - name: 9. Subir APK para Descargar
+      - name: 9. Subir APK Final
         uses: actions/upload-artifact@v4
         with:
           name: ONYX-APK-FINAL
